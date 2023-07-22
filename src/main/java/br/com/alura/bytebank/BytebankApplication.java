@@ -35,6 +35,7 @@ public class BytebankApplication {
                     case 6:
                         realizarDeposito();
                         break;
+
                 }
             } catch (RegraDeNegocioException e) {
                 System.out.println("Erro: " +e.getMessage());

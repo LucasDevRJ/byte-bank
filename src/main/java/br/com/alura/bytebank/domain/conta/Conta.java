@@ -17,6 +17,12 @@ public class Conta {
         this.saldo = BigDecimal.ZERO;
     }
 
+    public Conta(Integer numeroRecuperado, BigDecimal saldo, Cliente cliente) {
+        this.numero = numero;
+        this.titular = titular;
+        this.saldo = BigDecimal.ZERO;
+    }
+
     public boolean possuiSaldo() {
         return this.saldo.compareTo(BigDecimal.ZERO) != 0;
     }
