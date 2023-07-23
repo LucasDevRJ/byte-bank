@@ -2,9 +2,13 @@ package br.com.alura.bytebank;
 
 import br.com.alura.bytebank.domain.RegraDeNegocioException;
 import br.com.alura.bytebank.domain.cliente.DadosCadastroCliente;
+import br.com.alura.bytebank.domain.conta.Conta;
+import br.com.alura.bytebank.domain.conta.ContaDAO;
 import br.com.alura.bytebank.domain.conta.ContaService;
 import br.com.alura.bytebank.domain.conta.DadosAberturaConta;
 
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.Scanner;
 
 public class BytebankApplication {

@@ -11,28 +11,14 @@ public class Conta {
     private BigDecimal saldo;
     private Cliente titular;
 
-    public Conta(Integer numero, Cliente titular) {
+    public Conta(Integer numero, BigDecimal saldo, Cliente titular) {
         this.numero = numero;
         this.titular = titular;
-        this.saldo = BigDecimal.ZERO;
-    }
-
-    public Conta(Integer numeroRecuperado, BigDecimal saldo, Cliente cliente) {
-        this.numero = numero;
-        this.titular = titular;
-        this.saldo = BigDecimal.ZERO;
+        this.saldo = saldo;
     }
 
     public boolean possuiSaldo() {
         return this.saldo.compareTo(BigDecimal.ZERO) != 0;
-    }
-
-    public void sacar(BigDecimal valor) {
-        this.saldo = this.saldo.subtract(valor);
-    }
-
-    public void depositar(BigDecimal valor) {
-        this.saldo = this.saldo.add(valor);
     }
 
     @Override
