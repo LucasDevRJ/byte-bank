@@ -21,7 +21,7 @@ public class ContaDAO {
     public void salvar(DadosAberturaConta dadosDaConta) {
         //criando cliente e conta do mesmo
         var cliente = new Cliente(dadosDaConta.dadosCliente());
-        var conta = new Conta(dadosDaConta.numero(), cliente);
+        var conta = new Conta(dadosDaConta.numero(), BigDecimal.ZERO, cliente);
 
         //claúsula SQL para atribuir valores na conta
         String sql = "INSERT INTO conta(numero, saldo, cliente_nome, cliente_cpf, cliente_email)"+
@@ -66,7 +66,7 @@ public class ContaDAO {
                 DadosCadastroCliente dados = new DadosCadastroCliente(nome, cpf, email);
                 Cliente cliente = new Cliente(dados);
 
-                contas.add(new Conta(numero, cliente));
+                contas.add(new Conta(numero, saldo, cliente));
             }
             clausulasSQL.close();
             resultSet.close();
