@@ -54,7 +54,8 @@ public class ContaService {
             throw new RegraDeNegocioException("Valor do deposito deve ser superior a zero!");
         }
 
-        alterar(conta, valor);
+        BigDecimal novoValor = conta.getSaldo().add(valor);
+        alterar(conta, novoValor);
     }
 
 
