@@ -82,4 +82,9 @@ public class ContaService {
         Connection conn = connection.recuperarConexao();
         new ContaDAO(conn).alterar(conta.getNumero(), valor);
     }
+
+    public void realizarTransferencia(Integer numeroContaOrigem, Integer numeroContaDestino, BigDecimal valor) {
+        this.realizarSaque(numeroContaOrigem, valor);
+        this.realizarDeposito(numeroContaDestino, valor);
+    }
 }
