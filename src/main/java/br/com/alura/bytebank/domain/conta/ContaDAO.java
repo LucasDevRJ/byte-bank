@@ -141,6 +141,8 @@ public class ContaDAO {
 
         try {
             PreparedStatement clausulasSql = this.conexao.prepareStatement(sql);
+            clausulasSql.setInt(1, numero);
+
             clausulasSql.execute();
             clausulasSql.close();
             this.conexao.close();

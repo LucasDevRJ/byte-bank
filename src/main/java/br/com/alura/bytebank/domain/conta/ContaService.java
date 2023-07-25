@@ -12,14 +12,14 @@ public class ContaService {
 
     private Set<Conta> contas = new HashSet<>();
 
-    private ConnectionFactory connection;
+    private ConnectionFactory conexao;
 
     public ContaService() {
-        this.connection = new ConnectionFactory();
+        this.conexao = new ConnectionFactory();
     }
 
     public Set<Conta> listarContasAbertas() {
-        Connection conn = connection.recuperarConexao();
+        Connection conn = conexao.recuperarConexao();
         return new ContaDAO(conn).listar();
     }
 
@@ -29,7 +29,7 @@ public class ContaService {
     }
 
     public void abrir(DadosAberturaConta dadosDaConta) {
-        Connection conn = connection.recuperarConexao();
+        Connection conn = conexao.recuperarConexao();
         new ContaDAO(conn).salvar(dadosDaConta);
     }
 
@@ -44,7 +44,7 @@ public class ContaService {
         }
 
         BigDecimal novoValor = conta.getSaldo().subtract(valor);
-        Connection conn = connection.recuperarConexao();
+        Connection conn = conexao.recuperarConexao();
         new ContaDAO(conn).alterar(numeroDaConta, novoValor);
     }
 
@@ -65,11 +65,13 @@ public class ContaService {
             throw new RegraDeNegocioException("Conta não pode ser encerrada pois ainda possui saldo!");
         }
 
-        contas.remove(conta);
+        Connection conexao = this.conexao.recuperarConexao();
+
+        new ContaDAO(conexao).deletar(numeroDaConta);
     }
 
     private Conta buscarContaPorNumero(Integer numero) {
-        Connection conn = connection.recuperarConexao();
+        Connection conn = conexao.recuperarConexao();
         Conta conta = new ContaDAO(conn).listarPorNumero(numero);
         if(conta != null) {
             return conta;
@@ -79,7 +81,7 @@ public class ContaService {
     }
 
     private void alterar(Conta conta, BigDecimal valor) {
-        Connection conn = connection.recuperarConexao();
+        Connection conn = conexao.recuperarConexao();
         new ContaDAO(conn).alterar(conta.getNumero(), valor);
     }
 
