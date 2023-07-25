@@ -21,11 +21,11 @@ public class ContaDAO {
     public void salvar(DadosAberturaConta dadosDaConta) {
         //criando cliente e conta do mesmo
         var cliente = new Cliente(dadosDaConta.dadosCliente());
-        var conta = new Conta(dadosDaConta.numero(), BigDecimal.ZERO, cliente);
+        var conta = new Conta(dadosDaConta.numero(), BigDecimal.ZERO, cliente, true);
 
         //claúsula SQL para atribuir valores na conta
-        String sql = "INSERT INTO conta(numero, saldo, cliente_nome, cliente_cpf, cliente_email)"+
-                "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO conta(numero, saldo, cliente_nome, cliente_cpf, cliente_email, esta_ativa)"+
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             //para criarmos cláusulas SQL
@@ -37,6 +37,7 @@ public class ContaDAO {
             parametros.setString(3, conta.getTitular().getNome());
             parametros.setString(4, conta.getTitular().getCpf());
             parametros.setString(5, conta.getTitular().getEmail());
+            parametros.setBoolean(6, true);
             parametros.execute();
             //fechando conexão com o banco
             parametros.close();
@@ -50,7 +51,7 @@ public class ContaDAO {
         PreparedStatement clausulasSQL;
         ResultSet resultSet;
         Set<Conta> contas = new HashSet<Conta>();
-        String sql = "SELECT * FROM conta";
+        String sql = "SELECT * FROM conta WHERE esta_ativa = true";
 
         try {
             clausulasSQL = this.conexao.prepareStatement(sql);
@@ -62,11 +63,12 @@ public class ContaDAO {
                 String nome = resultSet.getString(3);
                 String cpf = resultSet.getString(4);
                 String email = resultSet.getString(5);
+                Boolean estaAtiva = resultSet.getBoolean(6);
 
                 DadosCadastroCliente dados = new DadosCadastroCliente(nome, cpf, email);
                 Cliente cliente = new Cliente(dados);
 
-                contas.add(new Conta(numero, saldo, cliente));
+                contas.add(new Conta(numero, saldo, cliente, estaAtiva));
             }
             clausulasSQL.close();
             resultSet.close();
@@ -78,7 +80,7 @@ public class ContaDAO {
     }
 
     public Conta listarPorNumero(Integer numero) {
-        String sql = "SELECT * FROM conta WHERE numero = ?";
+        String sql = "SELECT * FROM conta WHERE numero = ? AND esta_ativa = true";
 
         PreparedStatement ps;
         ResultSet resultSet;
@@ -94,12 +96,13 @@ public class ContaDAO {
                 String nome = resultSet.getString(3);
                 String cpf = resultSet.getString(4);
                 String email = resultSet.getString(5);
+                Boolean estaAtiva = resultSet.getBoolean(6);
 
                 DadosCadastroCliente dadosCadastroCliente =
                         new DadosCadastroCliente(nome, cpf, email);
                 Cliente cliente = new Cliente(dadosCadastroCliente);
 
-                conta = new Conta(numeroRecuperado, saldo, cliente);
+                conta = new Conta(numeroRecuperado, saldo, cliente, estaAtiva);
             }
             resultSet.close();
             ps.close();
@@ -147,6 +150,31 @@ public class ContaDAO {
             clausulasSql.close();
             this.conexao.close();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void alterarLogico(Integer numeroDaConta) {
+        PreparedStatement ps;
+        String sql = "UPDATE conta SET esta_ativa = false WHERE numero = ?";
+
+        try {
+            this.conexao.setAutoCommit(false);
+
+            ps = this.conexao.prepareStatement(sql);
+
+            ps.setInt(1, numeroDaConta);
+
+            ps.execute();
+            this.conexao.commit();
+            ps.close();
+            this.conexao.close();
+        } catch (SQLException e) {
+            try {
+                this.conexao.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             throw new RuntimeException(e);
         }
     }
