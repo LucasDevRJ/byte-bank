@@ -157,8 +157,7 @@ public class BytebankApplication {
         System.out.println("Digite o número da conta destino:");
         var numeroContaDestino = teclado.nextInt();
 
-        service.realizarSaque(numeroContaOrigem, valor);
-        service.realizarDeposito(numeroContaDestino, valor);
+        service.realizarTransferencia(numeroContaOrigem, numeroContaDestino, valor);
 
         System.out.println("Transferência realizada com sucesso!");
         System.out.println("Pressione qualquer tecla e de ENTER para voltar ao menu principal");
